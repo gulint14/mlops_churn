@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+var employeeLabel = [], employeeSalaryData = [], employeeAgeData = []
+var feature = [], driftstatus = []
+
+async function driftChart() {
+  await getDriftData()
+
+const ctx = document.getElementById('myChart').getContext('2d');
+//document.getElementById('lastRefresh').textContent = Date.now();
+var today = new Date();
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+var dateTime = date+' '+time;
+document.getElementById('lastRefresh').textContent = dateTime;
+
+const chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+        labels: Label,
+        datasets: [{
+            label: 'Drift Status per Feature',
+            borderColor: 'light blue',
+            backgroundColor: 'blue',
+            data: driftdata
+        }
+
+      ]
+    },
+    // Configuration options go here
+    options: {
+      tooltips: {
+        mode: 'index'
+      }
+    }
+})}
+
+
+async function driftChart1() {
+  await getDriftData()
+
+const ctx = document.getElementById('myChart1').getContext('2d');
+//document.getElementById('lastRefresh').textContent = Date.now();
+var today = new Date();
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+var dateTime = date+' '+time;
+document.getElementById('lastRefresh').textContent = dateTime;
+
+const chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'pie',
+
+    // The data for our dataset
+    data: {
+        labels: Label,
+        datasets: [{
+            label: 'Drift Status',
+            borderColor: 'light blue',
+            backgroundColor: 'blue',
+            data: driftdata
+        }
+
+      ]
+    },
+    // Configuration options go here
+    options: {
+      tooltips: {
+        mode: 'index'
+      }
+    }
+})}
+
+
+driftChart();
+driftChart1();
+
+//setInterval(dummyChart, 10000);
+
+//Fetch Data from API
+async function getDriftData() {
+  const apiUrl = "./drift/churn"
+
+  const response = await fetch(apiUrl)
+  const barChartData = await response.json()
+  console.log(barChartData)
+  const feature = barChartData.map((x) => x.feature)
+  console.log(feature)
+  const driftstatus = barChartData.map((x) => x.driftstatus)
+
+  driftdata = driftstatus
+  Label = feature
+}
+</script>
+
+<div class="ui form">
+  <h4 class="ui dividing header">Drift Control Dashboard</h4>
+  <div class="two fields">
+    <div class="field">
+      <canvas id="myChart"></canvas>
+    </div>
+    <div class="field">
+      <canvas id="myChart1" ></canvas>
+    </div>
+  </div>
+
+  <h4 class="ui dividing header"><p id="lastRefresh"></p></h4>
+</div>
+
+<table class ="ui celled table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Drift Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dlog in driftlog %}
+        {% if dlog.driftstatus %}
+          <tr class="error">
+            <td>{{ dlog.feature }}</td>
+            <td>{{ dlog.driftstatus }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td>{{ dlog.feature }}</td>
+            <td>{{ dlog.driftstatus }}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+
+</table>
+
+{% endblock content %}
+
+

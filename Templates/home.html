@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<script>
+$(document).ready(function() {
+  $("#predict").click(function(){
+
+    $("#PResult").val("");
+    var CreditScore = $("#CreditScore").val();
+    var Age = $("#Age").val();
+    var Gender = $("#Gender").val();
+    var Geography = $("#Geography option:selected").val();
+    var Tenure = parseInt($("#Tenure").val());
+    var Balance = $("#Balance").val();
+    var EstimatedSalary = $("#EstimatedSalary").val();
+    var NumOfProducts = $("#NumOfProducts").val();
+    var HasCrCard
+    var IsActiveMember
+
+    if($("#HasCrCard").is(':checked'))
+      HasCrCard ="1"
+    else
+      HasCrCard ="0"
+
+    if($("#IsActiveMember").is(':checked'))
+      IsActiveMember="1"
+    else
+      IsActiveMember ="0"
+
+    var request = $.ajax({
+      url: '/Prediction/CustomerChurn',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        "CreditScore": CreditScore,
+        "Geography": Geography,
+        "Gender": Gender,
+        "Age": Age,
+        "Tenure": Tenure,
+        "Balance": Balance,
+        "NumOfProducts": NumOfProducts,
+        "HasCrCard": HasCrCard,
+        "IsActiveMember": IsActiveMember,
+        "EstimatedSalary": EstimatedSalary
+      }),
+      dataType:'json'
+    });
+
+    request.done(function(response){
+      //$("p").append("status "+response.Prediction+" " +response.db_record.prediction_time+" " + response.db_record.client_ip);
+
+      var resultMessage;
+      if(response.Prediction==0) {
+        resultMessage ="Customer is happy with the services"
+      }
+      else {
+        resultMessage ="Customer is not happy with the services"
+      }
+      $("#PResult").val(resultMessage+" Prediction done at " + response.db_record.prediction_time+ " requested by ip " + response.db_record.client_ip );
+     
+    });
+  
+
+  })
+});
+</script>
+
+<div class="ui form">
+
+  <h4 class="ui dividing header">Input Following Information</h4>
+
+  <div class="four fields">
+    <div class="field">
+      <label>Customer Score</label>
+      <input id="CreditScore" type="text" placeholder="300",value="300">
+    </div>
+
+    <div class="field">
+      <label>Age</label>
+      <input id="Age" type="text" placeholder="20", value="20">
+    </div>
+
+    <div class="field">
+      <label>Gender</label>
+      <select class="ui fluid dropdown" id="Gender">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Country</label>
+      <select class="ui fluid dropdown" id="Geography">
+        <option value="Spain">Spain</option>
+        <option value="France">France</option>
+        <option value="Germany">Germany</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="four fields">
+    <div class="field">
+      <label>Tenure</label>
+      <input id="Tenure" type="text" placeholder="2", value="2">
+    </div>
+
+    <div class="field">
+      <label>Balance</label>
+      <input id="Balance" type="text" placeholder="10000",value="10000">
+    </div>
+
+    <div class="field">
+      <label>Number of Products</label>
+      <input id="NumOfProducts" type="text" placeholder="3",value="3">
+    </div>
+
+    <div class="field">
+      <label>Estimated Salary</label>
+      <input id="EstimatedSalary" type="text" placeholder="400",value="400">
+    </div>
+
+  </div>
+
+  <div class="two fields">
+
+    <div class="field">
+      <div class="ui checkbox">
+        <input id="HasCrCard" type="checkbox" name="HasCrCard">
+        <label>Has Credit Card?</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <input id="IsActiveMember" type="checkbox" name="IsActiveMember">
+        <label>Active Member?</label>
+     </div>
+    </div>
+  </div>  
+
+  
+  <div class="two fields">
+
+    <div class="seven wide field"></div>
+      <button id="predict" class="ui primary button">Predict</button>
+    </div>  
+    <p>
+    </p>
+  
+    <div class="field">
+        <label>Prediction Result</label>
+        <input id="PResult" type="text" placeholder="" disabled="">
+    </div>
+
+  </div>  
+</div>
+
+
+
+{% endblock content %}
