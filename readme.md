@@ -29,24 +29,25 @@ docker-compose up -d
 docker-compose ps
 docker-compose stop prod test jenkins 
 
-Check MLFlow web ui 
-	http://localhost:5000/#/
+Check MLFlow web ui http://localhost:5000/#/
 		
-Check minio web ui
-    http://localhost:9001/#/
+Check minio web ui http://localhost:9001/#/
 
 ## local repo
 \Repos\FastAPI_MLOps
 
 ## make the git setup 
 git init
+
 git clone
 
 ## Database connection
 docker exec -it mlflow_db mysql -u mlops_user -p
 
 Database engine mysql
+
 Database        mlops
+
 Database user   mlops_user
 
 ## activate uvicorn 
@@ -66,6 +67,6 @@ jupyter lab --ip 0.0.0.0 --port 8990
 6. models.py => change to dbmodels.py
 7. churn_model => machine learning model
 8. dockerfile => if we want to deploy from a docker container
-9. Templates folder for web ui
+9. Templates folder for web uis
 
 
