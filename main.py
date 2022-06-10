@@ -70,7 +70,7 @@ def detect_drift(data1, data2, feature, db):
 def notify_slack ():
     if TRUE:
 
-        url = "https://hooks.slack.com/services/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"
+        url = "https://hooks.slack.com/services/***********/***********/************************"
         message = ("Drift, drift, drift from API !!! https://app.powerbi.com/links/Q91yrA_uu0?ctid=650a51da-7183-45bb-afbb-915d8a85b460&pbi_source=linkShare&bookmarkGuid=1d644f5e-2a1a-45b1-82e6-088914f089e3")
         title = (f"Drift Alert :zap:")
         slack_data = {
